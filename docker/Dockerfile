@@ -90,7 +90,7 @@ RUN \
         g++-aarch64-linux-gnu
 
 RUN echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && locale-gen
-RUN groupadd -g $GID $GROUP
+RUN groupadd -g $GID $GROUP || true
 RUN useradd -m -d $HOME -s /bin/bash -G sudo -u $UID -g $GID $USER
 RUN passwd -d $USER
 RUN ln -s /usr/bin/python3 /usr/bin/python
