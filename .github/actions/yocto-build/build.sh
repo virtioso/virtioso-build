@@ -4,7 +4,7 @@
 export INPUT_WORKSPACE=${INPUT_WORKSPACE:-$GITHUB_WORKSPACE/workspace}
 export INPUT_SETUP_PATH=${INPUT_SETUP_PATH:-setup.sh}
 
-echo "Machine: ${INPUT_MACHINE:-\(default\)}"
+echo "Machine: ${INPUT_MACHINE}"
 echo "Recipes: $INPUT_RECIPES"
 echo "Setup: $INPUT_SETUP_PATH"
 echo "Workspace: $INPUT_WORKSPACE"

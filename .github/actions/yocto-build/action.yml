@@ -9,6 +9,7 @@ inputs:
   machine:
     description: "Yocto target machine"
     required: false
+    default: "vm-raspberrypi4-64"
   recipes:
     description: "A space separated list of recipes to build"
     required: false

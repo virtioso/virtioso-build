@@ -6,8 +6,15 @@ else
 fi
 LAYERS_ROOT="$(realpath -e "$(dirname "$SCRIPT")")"
 
-# default to VM target
-export MACHINE=${MACHINE:-vm-raspberrypi4-64}
+MACHINE=""
+source "${LAYERS_ROOT}/../.config"
+
+if [ -z "$MACHINE" ]; then
+  echo "ERROR: MACHINE is empty" 1>&2
+  return 1
+fi
+
+export MACHINE
 
 if [ -n "$YOCTO_SOURCE_MIRROR_DIR" ]; then
   export INHERIT="own-mirrors"
