@@ -7,7 +7,7 @@ inputs:
   config:
     description: 'Make config'
     required: true
-    default: 'rpi4_defconfig'
+    default: 'raspberrypi4-64_defconfig'
 
   target:
     description: 'VM make target'

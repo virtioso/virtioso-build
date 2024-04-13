@@ -115,7 +115,7 @@ host% <b>make docker</b>
 ## Prepopulate build cache
 
 <pre>
-host% <b>make rpi4_defconfig</b>
+host% <b>make raspberrypi4-64_defconfig</b>
 host% <b>make build_cache</b>
 </pre>
 
@@ -126,7 +126,7 @@ host% <b>cd ${WORKSPACE}</b>
 
 # configure for Raspberry Pi 4
 
-host% <b>make rpi4_defconfig</b>
+host% <b>make raspberrypi4-64_defconfig</b>
 
 # simple seL4 microkernel test
 
@@ -215,7 +215,7 @@ host$ <b>repo sync</b>
 host$ <b>make docker</b>
 
 # configure for Raspberry Pi 4
-host$ <b>make rpi4_defconfig</b>
+host$ <b>make raspberrypi4-64_defconfig</b>
 
 # build VM root filesystems, Linux kernel and initramfs
 host$ <b>make linux-image</b>

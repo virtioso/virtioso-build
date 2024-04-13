@@ -32,7 +32,7 @@ on:
         required: false
       platform:
         description: 'Platform config'
-        default: 'rpi4_defconfig'
+        default: 'raspberrypi4-64_defconfig'
         required: false
         type: string
 

@@ -14,7 +14,7 @@ on:
         required: true
       platform:
         description: 'Platform config'
-        default: 'rpi4_defconfig'
+        default: 'raspberrypi4-64_defconfig'
         required: false
       manifest-url:
         description: 'Manifest repository'
