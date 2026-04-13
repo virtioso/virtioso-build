@@ -26,6 +26,8 @@ KERNEL_MEM_DEBUG_PRINTING=KernelMemDebugPrinting
 # Platform/boot options
 SEL4_ARCH=KernelSel4Arch
 VTX=KernelVTX
+ELFLOADER_IMAGE=ElfloaderImage
+DT_BINDINGS_PATH=KernelDTBindingsPath
 
 # CapDL loader options
 CAPDL_LOADER_CC_STANDARD=CapDLLoaderCallingConventionStandard

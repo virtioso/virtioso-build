@@ -11,7 +11,7 @@ all:
 	@echo
 	@echo "  Configuration:"
 	@echo "    menuconfig         - Interactive configuration menu"
-	@echo "    <name>_defconfig   - Load defconfig (e.g., ARCH=arm64 qemuarm64_defconfig)"
+	@echo "    <name>_defconfig   - Load defconfig (e.g., ARCH=arm64 orinagx_defconfig)"
 	@echo "    savedefconfig      - Save minimal config to defconfig file"
 	@echo "    oldconfig          - Update config with new options"
 	@echo

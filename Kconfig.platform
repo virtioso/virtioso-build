@@ -7,10 +7,17 @@ menu "Platform Selection"
 
 choice
     prompt "Target Platform"
-    default PLATFORM_QEMU_ARM_VIRT if ARCH_ARM64
+    default PLATFORM_ORINAGX if ARCH_ARM64
     default PLATFORM_QEMU_PC99 if ARCH_X86_64
     help
       Select the target hardware platform.
+
+config PLATFORM_ORINAGX
+    bool "NVIDIA Orin AGX"
+    depends on ARCH_ARM64
+    help
+      NVIDIA Jetson AGX Orin development kit.
+      Uses UEFI boot with EFI stub.
 
 config PLATFORM_RPI4
     bool "Raspberry Pi 4"
@@ -42,6 +49,7 @@ endchoice
 
 config BUILD_TARGET
     string
+    default "orinagx" if PLATFORM_ORINAGX
     default "rpi4" if PLATFORM_RPI4
     default "qemu-arm-virt" if PLATFORM_QEMU_ARM_VIRT
     default "qemu_pc99" if PLATFORM_QEMU_PC99
@@ -49,6 +57,7 @@ config BUILD_TARGET
 
 config PLATFORM
     string
+    default "orinagx" if PLATFORM_ORINAGX
     default "rpi4" if PLATFORM_RPI4
     default "qemu-arm-virt" if PLATFORM_QEMU_ARM_VIRT
     default "pc99" if PLATFORM_QEMU_PC99 || PLATFORM_PC99
@@ -61,6 +70,7 @@ config SIMULATION
 
 config NUM_NODES
     int
+    default 12 if PLATFORM_ORINAGX
     default 4 if PLATFORM_RPI4
     default 2 if PLATFORM_QEMU_ARM_VIRT
     default 1 if PLATFORM_QEMU_PC99 || PLATFORM_PC99
@@ -69,12 +79,32 @@ config NUM_NODES
       system so all supported cores are always brought up for the
       selected platform.
 
+config ELFLOADER_IMAGE
+    string
+    default "efi" if PLATFORM_ORINAGX
+    default ""
+    depends on ARCH_ARM64
+    help
+      Elfloader image type. Set to "efi" for UEFI boot.
+
 config MACHINE
     string "Yocto machine name"
+    default "vm-jetson-agx-orin" if PLATFORM_ORINAGX
     default "vm-raspberrypi4-64" if PLATFORM_RPI4
     default ""
     depends on ARCH_ARM64
     help
       Machine name for Yocto builds.
+
+config DT_BINDINGS_PATH
+    string "Path to dt-bindings headers for DTS compilation"
+    default ""
+    depends on PLATFORM_ORINAGX
+    help
+      Path to directory containing dt-bindings headers (clock, reset, etc.)
+      for device tree preprocessing. When set, DTS files can use:
+        #include <dt-bindings/clock/tegra234-clock.h>
+
+      For Orin AGX, use the nvidia-kernel-oot headers from Yocto build.
 
 endmenu
