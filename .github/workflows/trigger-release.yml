@@ -129,7 +129,7 @@ jobs:
             )
 
             for target in "${yocto_boot_targets[@]}"; do
-            cp tii_sel4_build/hardware/rpi4/$target "${{env.TII_SEL4_RELEASE}}/bin/boot/"
+            cp virtioso-build/hardware/rpi4/$target "${{env.TII_SEL4_RELEASE}}/bin/boot/"
             done
         - name: Copy release documentaion
           run: |

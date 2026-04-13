@@ -25,12 +25,12 @@ host$ <b>sync</b>
 Put the SD card into rpi4 and copy the network boot files in place:
 
 <pre>
-host$ <b>sudo ./tii_sel4_build/hardware/rpi4/prepare_camkes_boot.sh vm_qemu_virtio</b>
+host$ <b>sudo ./virtioso-build/hardware/rpi4/prepare_camkes_boot.sh vm_qemu_virtio</b>
 </pre>
 
 Power on rpi4 and you should see `vm_qemu_virtio` example booting up.
 Alternatively, you can boot Linux natively:
 
 <pre>
-host$ <b>sudo ./tii_sel4_build/hardware/rpi4/prepare_linux_boot.sh</b>
+host$ <b>sudo ./virtioso-build/hardware/rpi4/prepare_linux_boot.sh</b>
 </pre>

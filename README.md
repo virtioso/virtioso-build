@@ -1,4 +1,4 @@
-# TII seL4 build system
+# Virtioso build system
 
 These instructions have been tested with Ubuntu 20.10 desktop and Fedora 33.
 
@@ -11,6 +11,7 @@ These instructions have been tested with Ubuntu 20.10 desktop and Fedora 33.
 host% <b>sudo apt-get -y update</b>
 host% <b>sudo apt-get -y upgrade</b>
 host% <b>sudo apt -y install git repo</b>
+host% <b>sudo apt -y install python-lz4</b>
 </pre>
 
 ### Fedora
@@ -81,7 +82,7 @@ the cached build results across containers. Note that for CI purposes you need t
 yourself when to enable the cache.
 
 <pre>
-host% <b>export BUILD_CACHE_DIR=~/.tii_sel4_build</b>
+host% <b>export BUILD_CACHE_DIR=~/.virtioso-build</b>
 host% <b>echo 'export BUILD_CACHE_DIR='${BUILD_CACHE_DIR} >> ~/.bashrc</b>
 host% <b>mkdir -p ${BUILD_CACHE_DIR}/stack</b>
 </pre>
@@ -93,7 +94,7 @@ host% <b>mkdir -p ${BUILD_CACHE_DIR}/stack</b>
 host% <b>export WORKSPACE=~/sel4</b>
 
 host% <b>mkdir ${WORKSPACE} && cd ${WORKSPACE}</b>
-host% <b>repo init -u git@github.com:tiiuae/tii_sel4_manifest.git -b tii/development</b>
+host% <b>repo init -u git@github.com:virtioso/virtioso-manifest.git</b>
 host% <b>repo sync</b>
 </pre>
 
@@ -210,7 +211,7 @@ virtio-blk, virtio-console, virtio-net and virtfs to the user-VM guest. This dem
 Buildroot and uses Yocto to build the guest VM images.
 
 <pre>
-host$ <b>repo init -u git@github.com:tiiuae/tii_sel4_manifest.git -b tii/development</b>
+host$ <b>repo init -u git@github.com:virtioso/virtioso-manifest.git</b>
 host$ <b>repo sync</b>
 host$ <b>make docker</b>
 
@@ -224,7 +225,7 @@ host$ <b>make linux-image</b>
 host$ <b>make vm_qemu_virtio</b>
 
 # prepare TFTP directory for booting CAmkES example on target
-host$ <b>sudo ./tii_sel4_build/hardware/rpi4/prepare_camkes_boot.sh vm_qemu_virtio</b>
+host$ <b>sudo ./virtioso-build/hardware/rpi4/prepare_camkes_boot.sh vm_qemu_virtio</b>
 
 # expose driver-VM image via NFS (update your directory to command)
 host$ <b>tar -C /srv/nfs/rpi4 -xjpvf /workspace/projects/camkes-vm-images/rpi4/vm-image-driver.tar.bz2</b>
@@ -306,13 +307,13 @@ container% <b>bitbake vm-image-driver</b>
 host% <b>cd ${WORKSPACE}/vm-images/build/workspace/sources/kernel-module-sel4-virtio</b>
 host% <b>git commit -a --signoff</b>
 
-# Use devtool to embed the change commits into meta-sel4 layer as patches:
+# Use devtool to embed the change commits into meta-virtioso-sel4 layer as patches:
 container% <b>devtool update-recipe kernel-module-sel4-virtio</b>
 INFO: Adding new patch 0001-Say-hello.patch
 INFO: Updating recipe kernel-module-sel4-virtio_git.bb
 </pre>
 
-You will find patch you made in ```${WORKSPACE}/vm-images/meta-sel4/recipes-kernel/sel4-virtio/kernel-module-sel4-virtio```
+You will find patch you made in ```${WORKSPACE}/vm-images/virtioso-yocto-layers/meta-virtioso-sel4/recipes-kernel/sel4-virtio/kernel-module-sel4-virtio```
 and the patch added to ```SRC_URI``` field in the recipe. To get rid of the working copy:
 
 <pre>
