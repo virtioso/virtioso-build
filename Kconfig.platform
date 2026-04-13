@@ -1,0 +1,80 @@
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# Platform Selection
+#
+
+menu "Platform Selection"
+
+choice
+    prompt "Target Platform"
+    default PLATFORM_QEMU_ARM_VIRT if ARCH_ARM64
+    default PLATFORM_QEMU_PC99 if ARCH_X86_64
+    help
+      Select the target hardware platform.
+
+config PLATFORM_RPI4
+    bool "Raspberry Pi 4"
+    depends on ARCH_ARM64
+    help
+      Raspberry Pi 4 Model B.
+
+config PLATFORM_QEMU_ARM_VIRT
+    bool "QEMU ARM Virt"
+    depends on ARCH_ARM64
+    help
+      QEMU ARM Virtual Machine (qemu-system-aarch64 -M virt).
+      Useful for testing without hardware.
+
+config PLATFORM_QEMU_PC99
+    bool "QEMU PC99"
+    depends on ARCH_X86_64
+    help
+      QEMU PC99 virtual machine (64 bit).
+      Useful for testing without hardware.
+
+config PLATFORM_PC99
+    bool "PC99"
+    depends on ARCH_X86_64
+    help
+      Real x86_64 hardware using the seL4 PC99 platform.
+
+endchoice
+
+config BUILD_TARGET
+    string
+    default "rpi4" if PLATFORM_RPI4
+    default "qemu-arm-virt" if PLATFORM_QEMU_ARM_VIRT
+    default "qemu_pc99" if PLATFORM_QEMU_PC99
+    default "pc99" if PLATFORM_PC99
+
+config PLATFORM
+    string
+    default "rpi4" if PLATFORM_RPI4
+    default "qemu-arm-virt" if PLATFORM_QEMU_ARM_VIRT
+    default "pc99" if PLATFORM_QEMU_PC99 || PLATFORM_PC99
+
+config SIMULATION
+    bool
+    default y if PLATFORM_QEMU_ARM_VIRT
+    default y if PLATFORM_QEMU_PC99
+    default n
+
+config NUM_NODES
+    int
+    default 4 if PLATFORM_RPI4
+    default 2 if PLATFORM_QEMU_ARM_VIRT
+    default 1 if PLATFORM_QEMU_PC99 || PLATFORM_PC99
+    help
+      Platform-specific CPU topology. This remains internal to the build
+      system so all supported cores are always brought up for the
+      selected platform.
+
+config MACHINE
+    string "Yocto machine name"
+    default "vm-raspberrypi4-64" if PLATFORM_RPI4
+    default ""
+    depends on ARCH_ARM64
+    help
+      Machine name for Yocto builds.
+
+endmenu

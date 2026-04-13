@@ -1,0 +1,85 @@
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# CapDL Loader Options
+#
+# These mirror the options in capdl-loader-app/CMakeLists.txt
+
+menuconfig CAPDL_LOADER
+    bool "CapDL Loader Options"
+    default y
+    help
+      Configure CapDL loader settings.
+      Enabled by default with CMake-equivalent defaults.
+
+if CAPDL_LOADER
+
+choice
+    prompt "Calling convention"
+    default CAPDL_LOADER_CC_STANDARD
+    help
+      Select the calling convention that loaded processes are expecting.
+      If you select the register convention you will be limited to passing
+      four arguments to processes and their stack frames will not need to
+      be mapped in during thread configuration.
+
+config CAPDL_LOADER_CC_STANDARD
+    bool "Standard"
+    help
+      Use standard calling convention with stack-based arguments.
+
+config CAPDL_LOADER_CC_REGISTERS
+    bool "Registers"
+    help
+      Use register-based calling convention. Limited to four arguments.
+
+endchoice
+
+config CAPDL_LOADER_MAX_OBJECTS
+    int "Maximum number of objects"
+    default 4096
+    help
+      Maximum number of objects that can be handled by the loader.
+      Note that there is an upper limit on this based on the size
+      of the initialiser's CNode.
+
+config CAPDL_LOADER_FILLS_PER_FRAME
+    int "Maximum fill commands per frame"
+    default 1
+    help
+      Maximum number of fill commands per frame.
+
+config CAPDL_LOADER_WRITEABLE_PAGES
+    bool "Map all pages as writeable"
+    default n
+    help
+      CapDL Loader will map all pages as writeable if the cap has grant
+      permissions. This is currently used to enable instruction and data
+      rewriting by an external debugger such as GDB.
+
+config CAPDL_LOADER_PRINT_DEVICE_INFO
+    bool "Print device frame information"
+    default n
+    help
+      Dump device frame information on startup for debugging purposes.
+
+config CAPDL_LOADER_PRINT_UNTYPEDS
+    bool "Print untyped object information"
+    default n
+    help
+      Dump untyped object information on startup for debugging purposes.
+
+config CAPDL_LOADER_PRINT_CAPDL_OBJECTS
+    bool "Print capDL objects verbosely"
+    default n
+    help
+      Display verbose capDL objects as they are created. Could help with
+      debugging, but for large specs with lots of objects, this could
+      slow things down significantly.
+
+config CAPDL_LOADER_STATIC_ALLOC
+    bool "Static allocation mode"
+    default n
+    help
+      Build the loader to expect a statically allocated capDL spec.
+
+endif # CAPDL_LOADER

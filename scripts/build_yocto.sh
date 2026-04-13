@@ -1,10 +1,19 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 . ${0%/*}/functions.sh
 
 cd vm-images
+set +u
 . setup.sh
-bitbake vm-image-driver
-bitbake vm-image-boot
+set -u
+
+targets=(
+    vm-image-user
+    vm-image-driver
+    vm-image-boot
+    vm-image-minimal
+)
+
+bitbake "${targets[@]}"

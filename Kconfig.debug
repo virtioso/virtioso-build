@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# Debug and Tracing Options
+#
+
+menuconfig KERNEL_DEBUG
+    bool "Kernel Debugging Options"
+    default n
+    help
+      Enable kernel debugging and tracing features.
+      These add overhead and should be disabled for production.
+
+if KERNEL_DEBUG
+
+config KERNEL_FTRACE_BUFFER
+    bool "Enable ftrace buffer"
+    default n
+    help
+      Enable kernel function tracing infrastructure.
+      Provides a ring buffer for recording kernel events,
+      RAS errors, and optional function traces.
+
+      This is the base infrastructure - enable KERNEL_FUNCTION_TRACE
+      for actual function enter/exit tracing.
+
+config KERNEL_FUNCTION_TRACE
+    bool "Function enter/exit tracing"
+    depends on KERNEL_FTRACE_BUFFER
+    default n
+    help
+      Instrument all kernel functions with enter/exit tracing
+      using -finstrument-functions compiler flag.
+
+      WARNING: This has HIGH performance overhead and generates
+      large amounts of trace data. Only enable for debugging.
+
+config KERNEL_MEM_DEBUG_PRINTING
+    bool "Verbose memory debug printing"
+    default y
+    help
+      Print verbose output about free memory initialization and
+      creation of untyped regions during kernel boot.
+
+      Useful for debugging memory layout issues.
+
+config SEL4_TRACE
+    bool "seL4 kernel tracing"
+    default n
+    help
+      Enable seL4 kernel entry/exit tracing and PMU export.
+      Sets KERNEL_ARM_EXPORT_PMU_USER.
+
+config KERNEL_ARM_EXPORT_PMU_USER
+    bool
+    default y if SEL4_TRACE
+    default n
+
+config KERNEL_FTRACE_FORCE_TRACK_KERNEL_ENTRIES
+    bool "Force track_kernel_entries with ftrace buffer"
+    depends on KERNEL_FTRACE_BUFFER
+    default y if KERNEL_FTRACE_BUFFER
+    default n
+    help
+      When enabled, KERNEL_FTRACE_BUFFER automatically enables
+      track_kernel_entries benchmark mode. Disable this to keep the ftrace
+      buffer active with lower event volume.
+
+config KERNEL_BENCHMARKS
+    string
+    default "track_kernel_entries" if SEL4_TRACE || KERNEL_FTRACE_FORCE_TRACK_KERNEL_ENTRIES
+    default ""
+    help
+      Kernel benchmark mode. Set automatically based on other options.
+
+endif # KERNEL_DEBUG

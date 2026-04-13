@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# seL4 Kernel Options
+#
+
+menu "Kernel Options"
+
+config HYPERVISOR
+    bool "Enable hypervisor support"
+    default y
+    help
+      Enable the architecture-specific seL4 hypervisor/virtualization mode.
+      This maps to EL2 support on ARM64 and VTX support on x86_64.
+
+config ARM_HYP
+    bool
+    default y if HYPERVISOR && ARCH_ARM64
+
+config VTX
+    bool
+    default y if HYPERVISOR && ARCH_X86_64
+
+endmenu

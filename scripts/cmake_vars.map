@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# Kconfig to CMake variable name mapping
+#
+# Format: KCONFIG_NAME=cmake_name
+# Lines starting with # are comments
+# Empty lines are ignored
+#
+# This file maps Kconfig symbol names (UPPER_SNAKE_CASE) to seL4/CAmkES
+# cmake variable names (usually CamelCase).
+#
+# Pass-through variables (same name in both):
+#   PLATFORM, MACHINE, ARM_HYP, CROSS_COMPILER_PREFIX, NUM_NODES, SIMULATION
+#   are passed through unchanged.
+#
+# Only add mappings here for variables that need name translation.
+#
+
+# Kernel options
+KERNEL_FTRACE_BUFFER=KernelFtraceBuffer
+KERNEL_FUNCTION_TRACE=KernelFunctionTrace
+KERNEL_BENCHMARKS=KernelBenchmarks
+KERNEL_ARM_EXPORT_PMU_USER=KernelArmExportPMUUser
+KERNEL_MEM_DEBUG_PRINTING=KernelMemDebugPrinting
+
+# Platform/boot options
+SEL4_ARCH=KernelSel4Arch
+VTX=KernelVTX
+
+# CapDL loader options
+CAPDL_LOADER_CC_STANDARD=CapDLLoaderCallingConventionStandard
+CAPDL_LOADER_CC_REGISTERS=CapDLLoaderCallingConventionRegisters
+CAPDL_LOADER_MAX_OBJECTS=CapDLLoaderMaxObjects
+CAPDL_LOADER_FILLS_PER_FRAME=CapDLLoaderFillsPerFrame
+CAPDL_LOADER_WRITEABLE_PAGES=CapDLLoaderWriteablePages
+CAPDL_LOADER_PRINT_DEVICE_INFO=CapDLLoaderPrintDeviceInfo
+CAPDL_LOADER_PRINT_UNTYPEDS=CapDLLoaderPrintUntypeds
+CAPDL_LOADER_PRINT_CAPDL_OBJECTS=CapDLLoaderPrintCapDLObjects
+CAPDL_LOADER_STATIC_ALLOC=CapDLLoaderStaticAlloc

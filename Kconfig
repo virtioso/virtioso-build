@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: BSD-2-Clause
+
+mainmenu "Virtioso build configuration"
+
+choice
+    prompt "Target Architecture"
+    default ARCH_ARM64
+
+config ARCH_ARM64
+    bool "ARM64"
+
+config ARCH_X86_64
+    bool "x86_64"
+
+endchoice
+
+config ARCH
+    string
+    default "arm64" if ARCH_ARM64
+    default "x86_64" if ARCH_X86_64
+
+config SEL4_ARCH
+    string
+    default "aarch64" if ARCH_ARM64
+    default "x86_64" if ARCH_X86_64
+
+source "Kconfig.platform"
+source "Kconfig.kernel"
+source "Kconfig.debug"
+source "Kconfig.capdl"
+
+config CROSS_COMPILER_PREFIX
+    string "Cross compiler prefix"
+    default "aarch64-linux-gnu-" if ARCH_ARM64
+    default "" if ARCH_X86_64
+    help
+      Prefix for cross-compilation toolchain.
+      For ARM64: aarch64-linux-gnu-
+      For x86_64 native builds, leave empty.
