@@ -45,6 +45,7 @@ RUN \
         python3-future \
         python3-jsonschema \
         python3-libarchive-c \
+        python3-lxml \
         python3-ply \
         python3-protobuf \
         python3-simpleeval \

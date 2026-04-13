@@ -24,7 +24,8 @@ if [ "${CONTAINER_ENGINE}" = "podman" ]; then
   CONTAINER_ENGINE_OPTS="--userns keep-id --pids-limit -1"
   CONTAINER_REGISTRY_PREFIX="localhost/"
 else
-  CONTAINER_ENGINE_OPTS="--add-host host.docker.internal:host-gateway"
+  # Use host network for DNS/internet access (bridge network has routing issues)
+  CONTAINER_ENGINE_OPTS="--network=host"
 fi
 
 CONTAINER_ENV_FLAGS=
