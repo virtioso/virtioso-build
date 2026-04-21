@@ -184,6 +184,11 @@ def git_stdout(repo_path: Path, args: Iterable[str]) -> str | None:
 
 
 def resolve_revision_commit(repo_path: Path, revision: str) -> str | None:
+    if re.fullmatch(r"[0-9a-fA-F]{40}", revision):
+        exact_commit = run_git(repo_path, ["cat-file", "-e", f"{revision}^{{commit}}"])
+        if exact_commit.returncode == 0:
+            return revision.lower()
+
     direct = git_stdout(repo_path, ["rev-parse", "--verify", f"{revision}^{{commit}}"])
     if direct:
         return direct
@@ -215,6 +220,20 @@ def branch_from_manifest(repo_path: Path, project: Project) -> str | None:
     return project.revision
 
 
+def revision_matches_head(repo_path: Path, project: Project) -> bool:
+    if not project.revision:
+        return False
+
+    head = git_stdout(repo_path, ["rev-parse", "HEAD"])
+    if not head:
+        return False
+
+    revision_commit = resolve_revision_commit(repo_path, project.revision)
+    if not revision_commit:
+        return False
+    return revision_commit == head
+
+
 def project_branch(repo_path: Path, project: Project) -> ProjectState:
     status = run_git(repo_path, ["status", "--porcelain"])
     clean = False
@@ -227,6 +246,9 @@ def project_branch(repo_path: Path, project: Project) -> ProjectState:
 
     branch = run_git(repo_path, ["symbolic-ref", "--quiet", "--short", "HEAD"])
     if branch.returncode != 0:
+        if revision_matches_head(repo_path, project) and project.revision:
+            return ProjectState(branch=project.revision, clean=clean)
+
         manifest_branch = branch_from_manifest(repo_path, project)
         if manifest_branch:
             return ProjectState(branch=manifest_branch, clean=clean)
@@ -311,6 +333,7 @@ def replace_revision_attribute(tag_text: str, revision: str) -> str:
 def rewrite_top_level_manifest(
     manifest_path: Path,
     resolved_branches: dict[tuple[str, str], str],
+    matches_manifest: dict[tuple[str, str], bool],
     projects: list[Project],
     name_counts: dict[str, int],
 ) -> str:
@@ -372,7 +395,7 @@ def rewrite_top_level_manifest(
         branch = resolved_branches.get(key)
         if not branch:
             continue
-        if branch == project.revision:
+        if matches_manifest.get(key, False):
             continue
         if key in top_level_keys or project.name in top_level_name_keys:
             continue
@@ -423,6 +446,7 @@ def main() -> int:
     for project in projects:
         name_counts[project.name] = name_counts.get(project.name, 0) + 1
     resolved_branches: dict[tuple[str, str], str] = {}
+    matches_manifest: dict[tuple[str, str], bool] = {}
 
     for project in projects:
         repo_path = workspace_root / project.path
@@ -437,9 +461,9 @@ def main() -> int:
         branch = state.branch
         if not branch:
             continue
+        manifest_unchanged = revision_matches_head(repo_path, project)
 
         if args.remote:
-            manifest_unchanged = project.revision == branch
             if not (state.clean and manifest_unchanged):
                 if args.verify_pushed:
                     verify_remote_branch_tip(repo_path, project, args.remote, branch)
@@ -447,11 +471,13 @@ def main() -> int:
                     verify_remote_branch(repo_path, project, args.remote, branch)
 
         resolved_branches[project_key(project)] = branch
+        matches_manifest[project_key(project)] = manifest_unchanged
 
     original_text = manifest_path.read_text()
     rewritten_text = rewrite_top_level_manifest(
         manifest_path,
         resolved_branches,
+        matches_manifest,
         projects,
         name_counts,
     )
