@@ -13,7 +13,6 @@ targets=(
     vm-image-user
     vm-image-driver
     vm-image-boot
-    vm-image-minimal
 )
 
 bitbake "${targets[@]}"
