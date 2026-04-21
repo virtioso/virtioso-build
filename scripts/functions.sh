@@ -88,7 +88,7 @@ while IFS= read -r line; do
     # Translate variable name
     cmake_name=$(translate_var "$name")
 
-    # Convert y/n to ON/OFF for booleans
+    # Convert y/n to CMake booleans
     case "$value" in
         y) value="ON" ;;
         n) value="OFF" ;;

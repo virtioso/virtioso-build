@@ -91,8 +91,9 @@ config MACHINE
     string "Yocto machine name"
     default "vm-jetson-agx-orin" if PLATFORM_ORINAGX
     default "vm-raspberrypi4-64" if PLATFORM_RPI4
+    default "qemux86-64" if PLATFORM_QEMU_PC99
+    default "qemuarm64" if PLATFORM_QEMU_ARM_VIRT
     default ""
-    depends on ARCH_ARM64
     help
       Machine name for Yocto builds.
 

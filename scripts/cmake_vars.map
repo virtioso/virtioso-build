@@ -24,6 +24,7 @@ KERNEL_ARM_EXPORT_PMU_USER=KernelArmExportPMUUser
 KERNEL_MEM_DEBUG_PRINTING=KernelMemDebugPrinting
 
 # Platform/boot options
+ARCH_ARM64=AARCH64
 SEL4_ARCH=KernelSel4Arch
 VTX=KernelVTX
 ELFLOADER_IMAGE=ElfloaderImage
