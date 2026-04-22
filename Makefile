@@ -22,6 +22,7 @@ all:
 	@echo "    linux-image        - Build Yocto Linux images"
 	@echo "    linux-kernel-image - Build Yocto Linux kernel image only"
 	@echo "    kmod-sel4-virt     - Build Yocto kernel-module-sel4-virt recipe"
+	@echo "    qemu-runtime-x86_64 - Build relocatable Yocto host QEMU runtime artifact"
 	@echo
 	@echo "  Variables:"
 	@echo "    ARCH={arm64,x86_64}"
@@ -131,6 +132,7 @@ phony_explicit:
 	linux-image \
 	linux-kernel-image \
 	kmod-sel4-virt \
+	qemu-runtime-x86_64 \
 	build_cache \
 	build_camkes \
 	build_sel4test \
@@ -154,6 +156,9 @@ linux-kernel-image:
 
 kmod-sel4-virt:
 	@scripts/build_yocto_kmod_sel4_virt.sh
+
+qemu-runtime-x86_64:
+	@scripts/build_yocto_qemu_runtime_x86_64.sh
 
 shell:
 	@docker/enter_container.sh
