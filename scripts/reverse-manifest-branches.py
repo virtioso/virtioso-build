@@ -189,19 +189,17 @@ def resolve_revision_commit(repo_path: Path, revision: str) -> str | None:
         if exact_commit.returncode == 0:
             return revision.lower()
 
+    branch = revision.removeprefix("refs/heads/")
+    remotes = git_stdout(repo_path, ["remote"])
+    if remotes:
+        for remote in remotes.splitlines():
+            candidate = git_stdout(repo_path, ["rev-parse", "--verify", f"{remote}/{branch}^{{commit}}"])
+            if candidate:
+                return candidate
+
     direct = git_stdout(repo_path, ["rev-parse", "--verify", f"{revision}^{{commit}}"])
     if direct:
         return direct
-
-    branch = revision.removeprefix("refs/heads/")
-    remotes = git_stdout(repo_path, ["remote"])
-    if not remotes:
-        return None
-
-    for remote in remotes.splitlines():
-        candidate = git_stdout(repo_path, ["rev-parse", "--verify", f"{remote}/{branch}^{{commit}}"])
-        if candidate:
-            return candidate
     return None
 
 
@@ -218,6 +216,25 @@ def branch_from_manifest(repo_path: Path, project: Project) -> str | None:
         return None
 
     return project.revision
+
+
+def manifest_branch_name(project: Project) -> str | None:
+    if not project.revision:
+        return None
+    if re.fullmatch(r"[0-9a-fA-F]{40}", project.revision):
+        return None
+    return project.revision.removeprefix("refs/heads/")
+
+
+def state_matches_manifest_baseline(repo_path: Path, project: Project, state: ProjectState) -> bool:
+    if not state.clean or not state.branch:
+        return False
+
+    manifest_branch = manifest_branch_name(project)
+    if manifest_branch is None:
+        return revision_matches_head(repo_path, project) and state.branch == project.revision
+
+    return state.branch.removeprefix("refs/heads/") == manifest_branch and revision_matches_head(repo_path, project)
 
 
 def revision_matches_head(repo_path: Path, project: Project) -> bool:
@@ -463,12 +480,11 @@ def main() -> int:
             continue
         manifest_unchanged = revision_matches_head(repo_path, project)
 
-        if args.remote:
-            if not (state.clean and manifest_unchanged):
-                if args.verify_pushed:
-                    verify_remote_branch_tip(repo_path, project, args.remote, branch)
-                else:
-                    verify_remote_branch(repo_path, project, args.remote, branch)
+        if args.remote and not state_matches_manifest_baseline(repo_path, project, state):
+            if args.verify_pushed:
+                verify_remote_branch_tip(repo_path, project, args.remote, branch)
+            else:
+                verify_remote_branch(repo_path, project, args.remote, branch)
 
         resolved_branches[project_key(project)] = branch
         matches_manifest[project_key(project)] = manifest_unchanged

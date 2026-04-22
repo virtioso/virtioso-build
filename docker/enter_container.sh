@@ -45,4 +45,4 @@ exec ${CONTAINER_ENGINE} run --rm ${INTERACTIVE} \
   -v "${HOME}/.ssh:${HOME}/.ssh:z" \
   -v "${HOME}/.gitconfig:${HOME}/.gitconfig:z" \
   ${CONTAINER_ENGINE_OPTS} \
-  "${CONTAINER_REGISTRY_PREFIX}tiiuae/build:latest" ${CMD}
+  "${CONTAINER_REGISTRY_PREFIX}virtioso/build:latest" ${CMD}
