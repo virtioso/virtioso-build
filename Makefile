@@ -19,14 +19,17 @@ all:
 	@echo "    sel4test           - Build seL4 test suite"
 	@echo "    vm_minimal         - Build minimal VM example"
 	@echo "    vm_multi           - Build multi-VM example"
+	@echo "    isengard           - Build Isengard for ISENGARD_HOST={sel4,linux}"
 	@echo "    linux-image        - Build Yocto Linux images"
 	@echo "    linux-kernel-image - Build Yocto Linux kernel image only"
 	@echo "    kmod-sel4-virt     - Build Yocto kernel-module-sel4-virt recipe"
 	@echo "    qemu-runtime-x86_64 - Build relocatable Yocto host QEMU runtime artifact"
+	@echo "    isengard-linux-native - Build Linux-native Isengard shared-core demo and parity test"
 	@echo
 	@echo "  Variables:"
 	@echo "    ARCH={arm64,x86_64}"
 	@echo "    CROSS_COMPILE=<toolchain-prefix>"
+	@echo "    ISENGARD_HOST={sel4,linux}"
 	@echo
 	@echo "  Clean:"
 	@echo "    clean              - Remove build outputs"
@@ -45,6 +48,7 @@ MCONF := scripts/kconfig/mconf
 
 ARCH ?=
 CROSS_COMPILE ?=
+ISENGARD_HOST ?= sel4
 
 ifeq ($(origin CROSS_COMPILE), environment)
 ifneq ($(ARCH),arm64)
@@ -54,6 +58,7 @@ endif
 
 export ARCH
 export CROSS_COMPILE
+export ISENGARD_HOST
 
 $(CONF) $(MCONF):
 	$(MAKE) -C scripts/kconfig
@@ -109,7 +114,14 @@ build_sel4test: .config
 	@scripts/build_sel4test.sh
 
 $(TARGETS): phony_explicit
-	CAMKES_VM_APP=$@ $(MAKE) build_camkes
+	@if [ "$@" = "isengard" ] && [ "$(ISENGARD_HOST)" = "linux" ]; then \
+		$(MAKE) isengard-linux-native; \
+	elif [ "$@" = "isengard" ] && [ "$(ISENGARD_HOST)" != "sel4" ]; then \
+		echo "Unsupported ISENGARD_HOST='$(ISENGARD_HOST)'; expected sel4 or linux" >&2; \
+		exit 1; \
+	else \
+		CAMKES_VM_APP=$@ $(MAKE) build_camkes; \
+	fi
 
 sel4test:
 	$(MAKE) build_sel4test
@@ -133,6 +145,7 @@ phony_explicit:
 	linux-kernel-image \
 	kmod-sel4-virt \
 	qemu-runtime-x86_64 \
+	isengard-linux-native \
 	build_cache \
 	build_camkes \
 	build_sel4test \
@@ -159,6 +172,9 @@ kmod-sel4-virt:
 
 qemu-runtime-x86_64:
 	@scripts/build_yocto_qemu_runtime_x86_64.sh
+
+isengard-linux-native:
+	$(MAKE) -C sources/isengard-core
 
 shell:
 	@docker/enter_container.sh
