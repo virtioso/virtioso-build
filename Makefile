@@ -50,11 +50,7 @@ ARCH ?=
 CROSS_COMPILE ?=
 ISENGARD_HOST ?= sel4
 
-ifneq ($(wildcard $(CURDIR)/virtioso-build),)
-CONFIG_FILE := virtioso-build/.config
-else
 CONFIG_FILE := .config
-endif
 
 export KCONFIG_CONFIG := $(CONFIG_FILE)
 
@@ -97,7 +93,7 @@ clean:
 	$(MAKE) -C scripts/kconfig clean
 
 mrproper: clean
-	rm -f .config .config.old defconfig virtioso-build/.config virtioso-build/.config.old virtioso-build/defconfig
+	rm -f .config .config.old defconfig
 
 distclean: mrproper
 	rm -f *~ \#*\# *.orig *.rej *.swp

@@ -6,17 +6,17 @@ else
 fi
 LAYERS_ROOT="$(realpath -e "$(dirname "$SCRIPT")")"
 
-# Read MACHINE from Kconfig-generated .config
+# Read MACHINE from the canonical workspace-root Kconfig output.
 CONFIG_FILE="${LAYERS_ROOT}/../.config"
 if [ ! -f "$CONFIG_FILE" ]; then
-  echo "ERROR: .config not found. Run 'make <platform>_defconfig' first." 1>&2
+  echo "ERROR: .config not found at ${LAYERS_ROOT}/../.config. Run 'make <platform>_defconfig' first from workspace root." 1>&2
   return 1
 fi
 
 MACHINE=$(grep '^CONFIG_MACHINE=' "$CONFIG_FILE" | cut -d= -f2 | tr -d '"')
 
 if [ -z "$MACHINE" ]; then
-  echo "ERROR: MACHINE not set in .config" 1>&2
+  echo "ERROR: MACHINE not set in ${CONFIG_FILE}" 1>&2
   return 1
 fi
 

@@ -15,12 +15,9 @@ if [ -z "${container:-}" ] && [ ! -f /.dockerenv ]; then
 fi
 
 CONFIG_FILE="$(pwd)/.config"
-if [ ! -f "${CONFIG_FILE}" ] && [ -f "$(pwd)/virtioso-build/.config" ]; then
-  CONFIG_FILE="$(pwd)/virtioso-build/.config"
-fi
 
 if [ ! -f "${CONFIG_FILE}" ]; then
-  echo "ERROR: no configuration found at $(pwd)/.config or $(pwd)/virtioso-build/.config" >&2
+  echo "ERROR: no configuration found at $(pwd)/.config" >&2
   exit 1
 fi
 
