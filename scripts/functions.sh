@@ -14,8 +14,18 @@ if [ -z "${container:-}" ] && [ ! -f /.dockerenv ]; then
   exec docker/enter_container.sh "$(pwd)" scripts/${SCRIPT_BASENAME} $@
 fi
 
+CONFIG_FILE="$(pwd)/.config"
+if [ ! -f "${CONFIG_FILE}" ] && [ -f "$(pwd)/virtioso-build/.config" ]; then
+  CONFIG_FILE="$(pwd)/virtioso-build/.config"
+fi
+
+if [ ! -f "${CONFIG_FILE}" ]; then
+  echo "ERROR: no configuration found at $(pwd)/.config or $(pwd)/virtioso-build/.config" >&2
+  exit 1
+fi
+
 # shellcheck disable=SC1091
-. `pwd`/.config
+. "${CONFIG_FILE}"
 
 CONFIGURED_ARCH="${CONFIG_ARCH}"
 
@@ -95,7 +105,7 @@ while IFS= read -r line; do
     esac
 
     CMAKE_FLAGS="$CMAKE_FLAGS -D${cmake_name}=${value}"
-done < .config
+done < "${CONFIG_FILE}"
 
 # Trim leading space
 CMAKE_FLAGS=$(echo "$CMAKE_FLAGS" | sed 's/^ //')

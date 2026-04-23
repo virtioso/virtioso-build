@@ -50,6 +50,14 @@ ARCH ?=
 CROSS_COMPILE ?=
 ISENGARD_HOST ?= sel4
 
+ifneq ($(wildcard $(CURDIR)/virtioso-build),)
+CONFIG_FILE := virtioso-build/.config
+else
+CONFIG_FILE := .config
+endif
+
+export KCONFIG_CONFIG := $(CONFIG_FILE)
+
 ifeq ($(origin CROSS_COMPILE), environment)
 ifneq ($(ARCH),arm64)
 CROSS_COMPILE :=
@@ -89,7 +97,7 @@ clean:
 	$(MAKE) -C scripts/kconfig clean
 
 mrproper: clean
-	rm -f .config .config.old defconfig
+	rm -f .config .config.old defconfig virtioso-build/.config virtioso-build/.config.old virtioso-build/defconfig
 
 distclean: mrproper
 	rm -f *~ \#*\# *.orig *.rej *.swp
@@ -107,10 +115,10 @@ $(BUILD_CACHE_DIR)/stack:
 
 build_cache: $(BUILD_CACHE_DIR)/stack
 
-build_camkes: .config build_cache
+build_camkes: $(CONFIG_FILE) build_cache
 	@scripts/build_camkes.sh
 
-build_sel4test: .config
+build_sel4test: $(CONFIG_FILE)
 	@scripts/build_sel4test.sh
 
 $(TARGETS): phony_explicit
