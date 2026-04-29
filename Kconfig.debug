@@ -55,6 +55,14 @@ config KERNEL_ARM_EXPORT_PMU_USER
     default y if SEL4_TRACE
     default n
 
+config VIRTIO_VM_DEBUG
+    bool "Verbose virtio VM and cross-VM debug logging"
+    default n
+    help
+      Enable high-volume VM/VMM diagnostics for virtio and cross-VM interrupt
+      investigation. This logs each cross-VM event and Linux sel4_virt ioreq
+      wakeup path, so keep it disabled for normal boot and runtime testing.
+
 config KERNEL_FTRACE_FORCE_TRACK_KERNEL_ENTRIES
     bool "Force track_kernel_entries with ftrace buffer"
     depends on KERNEL_FTRACE_BUFFER
