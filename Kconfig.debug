@@ -99,3 +99,13 @@ config KMOD_SEL4_VIRT_STATS
       inter-VM doorbells, IRQ handling, queued work, empty work passes, or
       userspace poll readiness are burning CPU while VM1 is still loading.
       Keep disabled for normal boot and runtime testing.
+
+config QEMU_SEL4_RPC_WAIT_THREAD
+    bool "QEMU seL4 RPC dedicated wait thread"
+    default n
+    help
+      Build the QEMU seL4 accelerator with the older dedicated RPC wait
+      thread instead of servicing VM RPC readiness through QEMU's vmfd main
+      loop handler. This is an A/B diagnostic switch for comparing the
+      current vmfd readiness path against the 2024 RPi4-style request
+      service model.
