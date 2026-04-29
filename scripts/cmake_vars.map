@@ -22,6 +22,7 @@ KERNEL_FUNCTION_TRACE=KernelFunctionTrace
 KERNEL_BENCHMARKS=KernelBenchmarks
 KERNEL_ARM_EXPORT_PMU_USER=KernelArmExportPMUUser
 KERNEL_MEM_DEBUG_PRINTING=KernelMemDebugPrinting
+VM_IMAGE_LOAD_TIMING=VmImageLoadTiming
 
 # Platform/boot options
 ARCH_ARM64=AARCH64

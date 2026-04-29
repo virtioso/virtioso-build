@@ -81,3 +81,11 @@ config KERNEL_BENCHMARKS
       Kernel benchmark mode. Set automatically based on other options.
 
 endif # KERNEL_DEBUG
+
+config VM_IMAGE_LOAD_TIMING
+    bool "VM image load timing"
+    default n
+    help
+      Emit one timing line per CAmkES ARM VM image-loading step. This is useful
+      for diagnosing slow pre-kernel guest loading around "Loading Kernel".
+      Keep disabled for normal boot and runtime testing.
