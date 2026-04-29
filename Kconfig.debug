@@ -89,3 +89,13 @@ config VM_IMAGE_LOAD_TIMING
       Emit one timing line per CAmkES ARM VM image-loading step. This is useful
       for diagnosing slow pre-kernel guest loading around "Loading Kernel".
       Keep disabled for normal boot and runtime testing.
+
+config KMOD_SEL4_VIRT_STATS
+    bool "kmod-sel4-virt RPC/doorbell counters"
+    default n
+    help
+      Enable rate-limited sel4_virt_stats kernel log lines from the Linux
+      sel4_virt module. The counters are useful for diagnosing whether
+      inter-VM doorbells, IRQ handling, queued work, empty work passes, or
+      userspace poll readiness are burning CPU while VM1 is still loading.
+      Keep disabled for normal boot and runtime testing.
