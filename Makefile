@@ -25,6 +25,7 @@ all:
 	@echo "    kmod-sel4-virt     - Build Yocto kernel-module-sel4-virt recipe"
 	@echo "    qemu-runtime-x86_64 - Build relocatable Yocto host QEMU runtime artifact"
 	@echo "    isengard-linux-native - Build Linux-native Isengard shared-core demo and parity test"
+	@echo "    isengard-linux-image  - Build Yocto Isengard Linux image for Orin AGX bare-metal boot"
 	@echo
 	@echo "  Variables:"
 	@echo "    ARCH={arm64,x86_64}"
@@ -150,6 +151,7 @@ phony_explicit:
 	kmod-sel4-virt \
 	qemu-runtime-x86_64 \
 	isengard-linux-native \
+	isengard-linux-image \
 	build_cache \
 	build_camkes \
 	build_sel4test \
@@ -179,6 +181,9 @@ qemu-runtime-x86_64:
 
 isengard-linux-native:
 	$(MAKE) -C sources/isengard-core
+
+isengard-linux-image:
+	@MACHINE=isengard-agx-orin scripts/build_isengard_linux.sh
 
 shell:
 	@docker/enter_container.sh
