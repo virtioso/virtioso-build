@@ -10,6 +10,7 @@ set +u
 set -u
 
 targets=(
+    isengard-initramfs
     isengard-image-native
 )
 
