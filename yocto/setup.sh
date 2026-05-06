@@ -28,7 +28,10 @@ if [ -n "$YOCTO_SOURCE_MIRROR_DIR" ]; then
   export BB_ENV_PASSTHROUGH_ADDITIONS="${BB_ENV_PASSTHROUGH_ADDITIONS:-} SOURCE_MIRROR_URL INHERIT"
 fi
 
-. "${LAYERS_ROOT}/poky/oe-init-build-env" "$@"
+# wrynose: poky was split; use oe-core + meta-yocto template.
+# bitbake is found automatically at $OEROOT/../bitbake (sibling of oe-core).
+TEMPLATECONF="${LAYERS_ROOT}/conf/templates/default" \
+    . "${LAYERS_ROOT}/oe-core/oe-init-build-env" "$@"
 
 sed -i -e '/LAYERS_ROOT/d' conf/bblayers.conf
 

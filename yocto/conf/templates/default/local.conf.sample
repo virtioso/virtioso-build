@@ -1,0 +1,11 @@
+# MACHINE is set by setup.sh from the workspace .config (make <platform>_defconfig).
+# Override here only if running outside the virtioso-build setup.
+#MACHINE ??= "qemux86-64"
+
+# Parallelism — tune to your host
+#BB_NUMBER_THREADS ?= "${@oe.utils.cpu_count()}"
+#PARALLEL_MAKE ?= "-j ${@oe.utils.cpu_count()}"
+
+# Uncomment to enable the build history feature
+#INHERIT += "buildhistory"
+#BUILDHISTORY_COMMIT = "1"
