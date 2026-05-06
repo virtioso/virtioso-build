@@ -30,7 +30,7 @@ fi
 
 # wrynose: poky was split; use oe-core + meta-yocto template.
 # bitbake is found automatically at $OEROOT/../bitbake (sibling of oe-core).
-TEMPLATECONF="${LAYERS_ROOT}/conf/templates/default" \
+TEMPLATECONF="${LAYERS_ROOT}/virtioso-yocto-layers/meta-virtioso/conf/templates/default" \
     . "${LAYERS_ROOT}/oe-core/oe-init-build-env" "$@"
 
 sed -i -e '/LAYERS_ROOT/d' conf/bblayers.conf
