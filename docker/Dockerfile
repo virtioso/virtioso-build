@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bookworm
 
 ARG UID=1000
 ARG GID=1000
@@ -102,7 +102,7 @@ find '$HOME'/.ssh/ -type f -exec grep -l "PRIVATE" {} \; | xargs ssh-add &> /dev
 RUN printf 'add-auto-load-safe-path /workspace/.gdbinit' >> $HOME/.gdbinit
 USER $USER
 
-RUN pip3 install \
+RUN pip3 install --break-system-packages \
     aenum \
     jinja2 \
     ordered_set \

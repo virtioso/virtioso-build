@@ -30,7 +30,15 @@ fi
 
 # wrynose: poky was split; use oe-core + meta-yocto template.
 # bitbake is found automatically at $OEROOT/../bitbake (sibling of oe-core).
-TEMPLATECONF="${LAYERS_ROOT}/conf/templates/default" \
+# Remove stale bblayers.conf from any pre-wrynose build dir so oe-init-build-env
+# regenerates it from the template rather than keeping poky paths.
+_builddir="${1:-build}"
+if [ -f "${_builddir}/conf/bblayers.conf" ] && \
+   grep -q 'vm-images/poky' "${_builddir}/conf/bblayers.conf" 2>/dev/null; then
+    rm "${_builddir}/conf/bblayers.conf"
+fi
+unset _builddir
+TEMPLATECONF="${LAYERS_ROOT}/virtioso-yocto-layers/meta-virtioso/conf/templates/default" \
     . "${LAYERS_ROOT}/oe-core/oe-init-build-env" "$@"
 
 sed -i -e '/LAYERS_ROOT/d' conf/bblayers.conf
