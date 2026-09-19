@@ -39,6 +39,8 @@ Unless you have an existing SSH public/private key pair, generate one with ```ss
 or git cloning process will be quite cumbersome. In your github account, go to “Settings” → “SSH and GPG keys” and upload your
 ```${HOME}/.ssh/id_rsa.pub``` there. Make sure you upload the public key, not the private key. Make sure the latter is secure!
 
+The key stays on the host: the container reaches it through your ssh agent (`SSH_AUTH_SOCK`), so start one and `ssh-add` the key before `enter_container.sh`. Nothing under `${HOME}/.ssh` is mounted into the container.
+
 
 ## Install and configure docker
 

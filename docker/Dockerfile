@@ -95,10 +95,6 @@ RUN groupadd -g $GID $GROUP || true
 RUN useradd -m -d $HOME -s /bin/bash -G sudo -u $UID -g $GID $USER
 RUN passwd -d $USER
 RUN ln -s /usr/bin/python3 /usr/bin/python
-RUN printf '\n\n\
-eval $(ssh-agent -s &> /dev/null)\n\
-find '$HOME'/.ssh/ -type f -exec grep -l "PRIVATE" {} \; | xargs ssh-add &> /dev/null\n'\
->> $HOME/.bashrc
 RUN printf 'add-auto-load-safe-path /workspace/.gdbinit' >> $HOME/.gdbinit
 USER $USER
 
