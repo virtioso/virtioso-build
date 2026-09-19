@@ -33,6 +33,13 @@ if [ -n "${DOCKER_EXPORT}" ]; then
   CONTAINER_ENV_FLAGS=$(echo "${DOCKER_EXPORT}" | xargs -d ' ' -Ivar -- echo --env var)
 fi
 
+# Nothing private from $HOME enters the container: a recipe's tasks are
+# arbitrary code with network, so a mounted ~/.ssh is a private key any layer
+# in the build could publish. Git over ssh from inside (repo sync, push) goes
+# through the host's agent socket instead -- the key never leaves the host --
+# with known_hosts and .gitconfig mounted read-only where they exist.
+HOME_KNOWN_HOSTS=""; [ -r "${HOME}/.ssh/known_hosts" ] && HOME_KNOWN_HOSTS="${HOME}/.ssh/known_hosts"
+HOME_GITCONFIG=""; [ -r "${HOME}/.gitconfig" ] && HOME_GITCONFIG="${HOME}/.gitconfig"
 # shellcheck disable=SC2086
 exec ${CONTAINER_ENGINE} run --rm ${INTERACTIVE} \
   ${CONTAINER_ENV_FLAGS} \
@@ -42,7 +49,8 @@ exec ${CONTAINER_ENGINE} run --rm ${INTERACTIVE} \
   ${YOCTO_SOURCE_MIRROR_DIR:+-v "${YOCTO_SOURCE_MIRROR_DIR}":"${DIR}"/downloads:z} \
   ${BUILD_CACHE_DIR:+--env BUILD_CACHE_DIR="${HOME}"/.stack} \
   ${BUILD_CACHE_DIR:+-v "${BUILD_CACHE_DIR}"/stack:"${HOME}"/.stack:z} \
-  -v "${HOME}/.ssh:${HOME}/.ssh:z" \
-  -v "${HOME}/.gitconfig:${HOME}/.gitconfig:z" \
+  ${SSH_AUTH_SOCK:+-v "${SSH_AUTH_SOCK}:/run/host-ssh-agent.sock:z" --env SSH_AUTH_SOCK=/run/host-ssh-agent.sock} \
+  ${HOME_KNOWN_HOSTS:+-v "${HOME_KNOWN_HOSTS}:${HOME}/.ssh/known_hosts:ro,z"} \
+  ${HOME_GITCONFIG:+-v "${HOME_GITCONFIG}:${HOME}/.gitconfig:ro,z"} \
   ${CONTAINER_ENGINE_OPTS} \
   "${CONTAINER_REGISTRY_PREFIX}virtioso/build:latest" ${CMD}
